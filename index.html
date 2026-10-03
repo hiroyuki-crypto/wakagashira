@@ -1,0 +1,365 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>唐国町 若頭役割表</title><style>body{margin:0}[hidden]{display:none!important}
+/* 藍の法被と提灯の金。上に日→区切り、下に役割の席。1画面1区切りで手早く埋める */
+:root{
+  --bg:#f3f2ee; --surface:#ffffff; --ink:#1b2236; --muted:#5d6478; --line:#d9d8d2;
+  --ai:#1f3a6b; --ai-soft:#e3e9f4; --kin:#d9a21b; --kin-soft:#fbf0d2; --warn:#b4401f;
+  --display:"Zen Antique","Hiragino Mincho ProN",serif;
+  --body:"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12151d; --surface:#1b2030; --ink:#e9e8e3; --muted:#9aa0b2; --line:#2e3446;
+  --ai:#8fb0e8; --ai-soft:#24304a; --kin:#e8b53a; --kin-soft:#3a3120; --warn:#f08a68; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12151d; --surface:#1b2030; --ink:#e9e8e3; --muted:#9aa0b2; --line:#2e3446;
+  --ai:#8fb0e8; --ai-soft:#24304a; --kin:#e8b53a; --kin-soft:#3a3120; --warn:#f08a68; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:12px 120px}
+header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{font-family:var(--display);font-weight:400;font-size:1.6rem;margin:0;letter-spacing:.04em;text-wrap:balance}
+h1 small{display:block;font-family:var(--body);font-size:.75rem;color:var(--muted);letter-spacing:.1em}
+.status{font-size:.8rem;color:var(--muted)}
+.status.dirty{color:var(--warn)}
+nav.tabs{display:flex;gap:4px;margin:14px 0 10px;border-bottom:2px solid var(--line)}
+nav.tabs button{flex:1;padding:10px 4px;border:0;background:none;font:inherit;font-weight:700;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px;cursor:pointer}
+nav.tabs button[aria-selected="true"]{color:var(--ai);border-bottom-color:var(--kin)}
+.days{display:flex;gap:6px;margin:6px 0 10px}
+.days button{flex:1;padding:8px 4px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;font:inherit;font-weight:700;cursor:pointer;line-height:1.2}
+.days button small{display:block;font-weight:400;font-size:.72rem;color:var(--muted)}
+.days button[aria-pressed="true"]{background:var(--ai);border-color:var(--ai);color:var(--surface)}
+.days button[aria-pressed="true"] small{color:var(--surface);opacity:.8}
+.slots{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}
+.slots button{flex:0 0 auto;padding:6px 10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;font:inherit;font-size:.85rem;cursor:pointer;font-variant-numeric:tabular-nums;display:flex;gap:6px;align-items:center}
+.slots button[aria-pressed="true"]{border-color:var(--kin);background:var(--kin-soft);font-weight:700}
+.fill{font-size:.7rem;color:var(--muted)}
+.fill.full{color:var(--ai);font-weight:700}
+.slothead{margin:10px 0 6px;display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
+.slothead b{font-size:1.05rem}
+.slothead .route{color:var(--muted);font-size:.85rem;display:block}
+.tools{display:flex;gap:6px;flex-wrap:wrap}
+.btn{padding:7px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:.85rem;cursor:pointer}
+.btn.primary{background:var(--ai);border-color:var(--ai);color:var(--surface);font-weight:700}
+.btn.danger{color:var(--warn)}
+.btn:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--kin);outline-offset:2px}
+.role{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.step{display:inline-flex;gap:4px;align-items:center}.step button{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
+.role h3{margin:0 0 8px;font-size:.95rem;display:flex;gap:8px;align-items:center;justify-content:space-between}
+.tag{font-size:.7rem;font-weight:700;padding:1px 7px;border-radius:999px;background:var(--kin-soft);color:var(--ink);border:1px solid var(--kin)}
+.seats{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:6px}
+.seat{min-height:40px;padding:6px 8px;border-radius:8px;border:1px dashed var(--line);background:var(--bg);color:var(--muted);font:inherit;font-size:.9rem;text-align:left;cursor:pointer}
+.seat.on{border:1px solid var(--ai);background:var(--ai-soft);color:var(--ink);font-weight:700}
+.seat[disabled]{cursor:default}
+.seat,.free span[data-freem]{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.free span[data-freem]{padding:2px 8px;border:1px solid var(--line);border-radius:999px;background:var(--surface);cursor:grab}
+.seat.drop{outline:3px solid var(--kin);outline-offset:1px}
+.dragging{opacity:.35}
+.ghost{position:fixed;z-index:50;pointer-events:none;padding:6px 10px;border-radius:8px;background:var(--ai);color:var(--surface);font-weight:700;font-size:.9rem;box-shadow:0 6px 18px rgba(0,0,0,.25);transform:translate(-50%,-120%)}
+.rnote{font-size:.8rem;color:var(--ink);background:var(--kin-soft);border-left:3px solid var(--kin);padding:4px 8px;margin:0 0 8px;border-radius:0 6px 6px 0}
+.notes{margin:10px 0 0;padding:0;list-style:none;font-size:.8rem}
+.notes li{margin:4px 0}
+.hint{font-size:.78rem;color:var(--muted);margin:0 0 8px}
+.seat .warn{display:block;font-size:.68rem;color:var(--warn);font-weight:400}
+.free{margin-top:14px;font-size:.85rem;color:var(--muted)}
+.free span{display:inline-block;margin:2px 6px 2px 0;color:var(--ink)}
+/* sheet */
+.sheet-bg{position:fixed;inset:0;background:rgba(10,14,24,.45);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--surface);width:100%;max-width:560px;max-height:82vh;border-radius:14px 14px 0 0;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom,0px)}
+.sheet header{padding:14px 16px 8px;border-bottom:1px solid var(--line);display:block}
+.sheet header b{font-size:1rem}
+.sheet header input{margin-top:8px;width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font:inherit;background:var(--bg);color:var(--ink)}
+.plist{overflow-y:auto;padding:6px 8px 12px}
+.plist button{width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px;border:0;border-bottom:1px solid var(--line);background:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.plist button .sub{font-size:.75rem;color:var(--muted)}
+.plist button.busy{opacity:.55}
+.plist .cnt{font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.plist h4{margin:10px 6px 2px;font-size:.75rem;color:var(--muted);letter-spacing:.08em}
+/* tables */
+.tblwrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;font-size:.82rem;min-width:100%}
+th,td{border:1px solid var(--line);padding:5px 7px;white-space:nowrap;text-align:left;vertical-align:top}
+thead th{background:var(--ai);color:var(--surface);font-weight:700;position:sticky;top:0}
+thead th small{display:block;font-weight:400;opacity:.85;font-size:.7rem;white-space:normal;min-width:7em}
+tbody th{background:var(--ai-soft);font-weight:700;position:sticky;left:0;white-space:normal;width:5.5em;min-width:5.5em;font-size:.74rem;line-height:1.3}
+thead th:first-child{width:5.5em;min-width:5.5em}
+td{min-width:5.8em}
+td.empty{color:var(--line)}
+td.na{background:var(--bg)}
+td.me{background:var(--kin-soft);font-weight:700}
+.caption{font-family:var(--display);font-size:1.15rem;margin:0 0 6px}
+.cap-sub{font-size:.8rem;color:var(--muted);margin:0 0 8px}
+#shot{background:var(--surface);padding:12px}
+.personsel{display:flex;gap:8px;align-items:center;margin:8px 0}
+.personsel select{flex:1;min-width:0;padding:8px;border-radius:8px;border:1px solid var(--line);font:inherit;background:var(--surface);color:var(--ink)}
+.mylist{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:4px 12px;margin-bottom:14px}
+.mylist div{display:grid;grid-template-columns:3.4em 1fr auto;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.mylist div:last-child{border-bottom:0}
+.mylist .r{font-weight:700;color:var(--ai)}
+.mylist .lbl{color:var(--muted);font-size:.85rem;min-width:0}
+.mylist h4{margin:10px 0 2px;font-size:.8rem;color:var(--muted)}
+/* settings */
+.sec{margin:18px 0}
+.sec h2{font-size:1rem;margin:0 0 4px}
+.sec p{margin:0 0 8px;font-size:.82rem;color:var(--muted)}
+.row{display:flex;gap:6px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.row input[type=text]{flex:1;min-width:6em;padding:6px 8px;border:1px solid var(--line);border-radius:6px;font:inherit;background:var(--surface);color:var(--ink)}
+.row input.t{flex:0 0 4.2em;min-width:0}
+.row input.num{width:3.2em;padding:6px;border:1px solid var(--line);border-radius:6px;font:inherit;text-align:center;background:var(--surface);color:var(--ink)}
+.row label{font-size:.8rem;display:flex;gap:4px;align-items:center;color:var(--muted)}
+.row .mini{padding:5px 8px;font-size:.78rem}
+.row.absent input[type=text]{text-decoration:line-through;color:var(--muted)}
+.preset{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.confirm{background:var(--kin-soft);border:1px solid var(--kin);border-radius:8px;padding:8px 10px;font-size:.85rem;margin:6px 0;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.savebar{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));display:flex;justify-content:center;gap:10px;align-items:center;z-index:10}
+.ro-note{font-size:.8rem;color:var(--muted);margin:4px 0 0}
+@media (prefers-reduced-motion:no-preference){.sheet{animation:up .18s ease-out}@keyframes up{from{transform:translateY(30px);opacity:.6}}}
+</style></head><body><div class="wrap" id="app"></div><script>window.__STATE__={"v":1,"seq":29,"members":[{"id":"m1","name":"品川 一行","note":"","absent":false},{"id":"m2","name":"辻 智弥","note":"","absent":false},{"id":"m3","name":"辻 直人","note":"","absent":false},{"id":"m4","name":"中塚 直英","note":"","absent":false},{"id":"m5","name":"松山 直","note":"","absent":false},{"id":"m6","name":"山本 基次","note":"","absent":false},{"id":"m7","name":"枩田 富登志","note":"","absent":false},{"id":"m8","name":"川岸 拓也","note":"","absent":false},{"id":"m9","name":"小林 弘幸","note":"","absent":false},{"id":"m10","name":"藤原 務","note":"","absent":false},{"id":"m11","name":"デッカーウォーレン","note":"","absent":false},{"id":"m12","name":"波田 高志","note":"","absent":false},{"id":"m13","name":"山本 優一","note":"","absent":false},{"id":"m14","name":"山本 規秋","note":"","absent":false},{"id":"m15","name":"上代 峰春","note":"","absent":false},{"id":"m16","name":"松本 大介","note":"","absent":false},{"id":"m17","name":"松井 隆司","note":"","absent":false},{"id":"m18","name":"笠矢 裕介","note":"","absent":false},{"id":"m19","name":"辻 広行","note":"","absent":false},{"id":"m20","name":"中村 一彦","note":"","absent":false},{"id":"m21","name":"入江 政弘","note":"祭り不参加","absent":true},{"id":"m22","name":"尾高 卓三","note":"","absent":false},{"id":"m23","name":"中辻 純","note":"","absent":false},{"id":"m24","name":"川端 祥嘉","note":"宵宮13時から参加","absent":false},{"id":"m25","name":"山本 裕貴","note":"","absent":false},{"id":"m26","name":"高宮 友希","note":"","absent":false},{"id":"m27","name":"楠本 修一","note":"","absent":false},{"id":"m28","name":"豊田 雄吉","note":"","absent":false},{"id":"m29","name":"友谷 勇樹","note":"","absent":false},{"id":"m30","name":"前田 正志","note":"","absent":false},{"id":"m31","name":"青山 慎治","note":"","absent":false},{"id":"m32","name":"松村 憲史","note":"","absent":false},{"id":"m33","name":"谷口 公和","note":"","absent":false},{"id":"m34","name":"谷村 修平","note":"","absent":false},{"id":"m35","name":"前山 圭児","note":"","absent":false},{"id":"m36","name":"安井 政樹","note":"","absent":false},{"id":"m37","name":"奈良 吉隆","note":"","absent":false},{"id":"m38","name":"友谷 和之","note":"祭り不参加","absent":true},{"id":"m39","name":"泉山 拓也","note":"","absent":false},{"id":"m40","name":"松葉 潤","note":"","absent":false},{"id":"m41","name":"友谷 仁司","note":"","absent":false},{"id":"m42","name":"奥村 秀宏","note":"祭り不参加","absent":true}],"roles":[{"id":"r1","name":"先頭無線","count":2,"fixed":true},{"id":"r2","name":"纏","count":5,"fixed":false,"note":"纏はこの5人で決定。纏を持つのは3人。持たない人は綱回りに入り、交代のローテーションは5人で自由に組んでOK。"},{"id":"r3","name":"綱回り","count":8,"fixed":false},{"id":"r28","name":"綱回り（どんす前）","count":4,"fixed":true},{"id":"r4","name":"綱回り（どんす前）","count":3,"fixed":false},{"id":"r5","name":"前梃子","count":10,"fixed":true},{"id":"r6","name":"エンドライン（＋ブレーキ）","count":2,"fixed":true},{"id":"r7","name":"エンドライン","count":5,"fixed":false},{"id":"r23","name":"交通（和田医院）","count":1,"fixed":false},{"id":"r24","name":"交通（シビス）","count":1,"fixed":false},{"id":"r25","name":"交通（あったか亭A）","count":1,"fixed":false},{"id":"r26","name":"交通（唐国中）","count":1,"fixed":false},{"id":"r27","name":"給水","count":1,"fixed":false,"multi":true},{"id":"r29","name":"フリー","count":1,"fixed":false}],"slots":[{"id":"s1","day":"t","time":"12:30","label":"地車小屋 → 本部（5町）"},{"id":"s2","day":"t","time":"13:30","label":"本部 → ならや → 本部"},{"id":"s3","day":"t","time":"14:30","label":"本部 → 唐国台 → 本部"},{"id":"s4","day":"t","time":"15:30","label":"本部 → 地車小屋"},{"id":"s5","day":"y","time":"9:00","label":"三町曳き（久保惣）"},{"id":"s6","day":"y","time":"11:00","label":"内田本部 → ローソン → 本部（子ども曳行）"},{"id":"s7","day":"y","time":"13:10","label":"本部 → ならや → 本部"},{"id":"s8","day":"y","time":"14:05","label":"本部 → トレビアン → 本部"},{"id":"s9","day":"y","time":"14:45","label":"本部 → ならや → 本部"},{"id":"s10","day":"y","time":"15:45","label":"本部 → トレビアン → 本部"},{"id":"s11","day":"y","time":"16:15","label":"本部 → トレビアン → 本部"},{"id":"s12","day":"y","time":"16:45","label":"本部 → トレビアン → 本部"},{"id":"s13","day":"y","time":"18:40","label":"夜曳き → 地車小屋（22:00）"},{"id":"s14","day":"h","time":"7:00","label":"本部 → トレビアン → 本部"},{"id":"s15","day":"h","time":"7:35","label":"菅原神社 → 金楽商事"},{"id":"s16","day":"h","time":"9:30","label":"ローソン → 地車小屋（子ども曳行）"},{"id":"s17","day":"h","time":"12:20","label":"パレード → 本部"},{"id":"s18","day":"h","time":"14:20","label":"本部 → ならや → 本部"},{"id":"s19","day":"h","time":"15:20","label":"本部 → ならや ×2 → 本部"},{"id":"s20","day":"h","time":"16:15","label":"本部 → トレビアン → 本部"},{"id":"s21","day":"h","time":"16:55","label":"本部 → トレビアン → 本部"},{"id":"s22","day":"h","time":"19:00","label":"夜曳き → 地車小屋（22:00）"}],"assign":{"s2":{"r2":["m40","m36","m39","m35","m37"],"r4":[null,null,null],"r23":["m18","m23"],"r24":["m17"],"r25":["m41"],"r26":["m31"],"r27":["m7","m5"],"r7":["m7","m5","m19",null,null],"r3":["m11","m14","m16","m20","m24","m30","m32","m28",null,null],"r29":["m2"]},"s3":{"r2":["m40","m36","m39","m35","m37"],"r4":[null,null,null],"r23":["m18","m23"],"r24":["m17"],"r25":["m41"],"r26":["m31"],"r27":["m7","m5"],"r7":["m7","m5","m19",null,null],"r3":["m11","m14","m16","m20","m24","m30","m32","m28",null,null],"r29":["m2"]},"s4":{"r2":["m40","m36","m39","m35","m37"],"r4":[null,null,null],"r23":["m18","m23"],"r24":["m17"],"r25":["m41"],"r26":["m31"],"r27":["m7","m5"],"r7":["m7","m5","m19",null,null],"r3":["m11","m14","m16","m20","m24","m30","m32","m28",null,null],"r29":["m2"]},"s5":{"r2":["m40","m36","m39","m35","m37"],"r4":[null,null,null],"r23":["m18","m23"],"r24":["m17"],"r25":["m41"],"r26":["m31"],"r27":["m7","m5"],"r7":["m7","m5","m19",null,null],"r3":["m11","m14","m16","m20",null,"m30","m32","m28",null,null],"r29":["m2"]},"s6":{"r2":["m40","m36","m39","m35","m37"],"r4":[null,null,null],"r23":["m18","m23"],"r24":["m17"],"r25":["m41"],"r26":["m31"],"r27":["m7","m5"],"r7":["m7","m5","m19",null,null],"r3":["m11","m14","m16","m20",null,"m30","m32","m28",null,null],"r29":["m2"]},"s7":{"r2":["m40","m36","m39","m35","m37"],"r4":[null,null,null],"r23":["m18","m23"],"r24":["m17"],"r25":["m41"],"r26":["m31"],"r27":["m7","m5"],"r7":["m7","m5","m19",null,null],"r3":["m11","m14","m16","m20","m24","m30","m32","m28",null,null],"r29":["m2"]},"s8":{"r2":["m40","m36","m39","m35","m37"],"r4":[null,null,null],"r23":["m18","m23"],"r24":["m17"],"r25":["m41"],"r26":["m31"],"r27":["m7","m5"],"r7":["m7","m5","m19",null,null],"r3":["m11","m14","m16","m20","m24","m30","m32","m28",null,null],"r29":["m2"]},"s9":{"r2":["m40","m36","m39","m35","m37"],"r4":[null,null,null],"r23":["m18","m23"],"r24":["m17"],"r25":["m41"],"r26":["m31"],"r27":["m7","m5"],"r7":["m7","m5","m19",null,null],"r3":["m11","m14","m16","m20","m24","m30","m32","m28",null,null],"r29":["m2"]},"s10":{"r2":["m40","m36","m39","m35","m37"],"r4":[null,null,null],"r23":["m18","m23"],"r24":["m17"],"r25":["m41"],"r26":["m31"],"r27":["m7","m5"],"r7":["m7","m5","m19",null,null],"r3":["m11","m14","m16","m20","m24","m30","m32","m28",null,null],"r29":["m2"]},"s11":{"r2":["m40","m36","m39","m35","m37"],"r4":[null,null,null],"r23":["m18","m23"],"r24":["m17"],"r25":["m41"],"r26":["m31"],"r27":["m7","m5"],"r7":["m7","m5","m19",null,null],"r3":["m11","m14","m16","m20","m24","m30","m32","m28",null,null],"r29":["m2"]},"s12":{"r2":["m40","m36","m39","m35","m37"],"r4":[null,null,null],"r23":["m18","m23"],"r24":["m17"],"r25":["m41"],"r26":["m31"],"r27":["m7","m5"],"r7":["m7","m5","m19",null,null],"r3":["m11","m14","m16","m20","m24","m30","m32","m28",null,null],"r29":["m2"]},"s13":{"r2":["m40","m36","m39","m35","m37"],"r4":[null,null,null],"r23":["m18","m23"],"r24":["m17"],"r25":["m41"],"r26":["m31"],"r27":["m7","m5"],"r7":["m7","m5","m19",null,null],"r3":["m11","m14","m16","m20","m24","m30","m32","m28",null,null],"r29":["m2"]},"s14":{"r2":["m40","m36","m39","m35","m37"],"r4":[null,null,null],"r23":["m18","m23"],"r24":["m17"],"r25":["m41"],"r26":["m31"],"r27":["m7","m5"],"r7":["m7","m5","m19",null,null],"r3":["m11","m14","m16","m20","m24","m30","m32","m28",null,null],"r29":["m2"]},"s15":{"r2":["m40","m36","m39","m35","m37"],"r4":[null,null,null],"r23":["m18","m23"],"r24":["m17"],"r25":["m41"],"r26":["m31"],"r27":["m7","m5"],"r7":["m7","m5","m19",null,null],"r3":["m11","m14","m16","m20","m24","m30","m32","m28",null,null],"r29":["m2"]},"s16":{"r2":["m40","m36","m39","m35","m37"],"r4":[null,null,null],"r23":["m18","m23"],"r24":["m17"],"r25":["m41"],"r26":["m31"],"r27":["m7","m5"],"r7":["m7","m5","m19",null,null],"r3":["m11","m14","m16","m20","m24","m30","m32","m28",null,null],"r29":["m2"]},"s17":{"r2":["m40","m36","m39","m35","m37"],"r4":[null,null,null],"r23":["m18","m23"],"r24":["m17"],"r25":["m41"],"r26":["m31"],"r27":["m7","m5"],"r7":["m7","m5","m19",null,null],"r3":["m11","m14","m16","m20","m24","m30","m32","m28",null,null],"r29":["m2"]},"s18":{"r2":["m40","m36","m39","m35","m37"],"r4":[null,null,null],"r23":["m18","m23"],"r24":["m17"],"r25":["m41"],"r26":["m31"],"r27":["m7","m5"],"r7":["m7","m5","m19",null,null],"r3":["m11","m14","m16","m20","m24","m30","m32","m28",null,null],"r29":["m2"]},"s19":{"r2":["m40","m36","m39","m35","m37"],"r4":[null,null,null],"r23":["m18","m23"],"r24":["m17"],"r25":["m41"],"r26":["m31"],"r27":["m7","m5"],"r7":["m7","m5","m19",null,null],"r3":["m11","m14","m16","m20","m24","m30","m32","m28",null,null],"r29":["m2"]},"s20":{"r2":["m40","m36","m39","m35","m37"],"r4":[null,null,null],"r23":["m18","m23"],"r24":["m17"],"r25":["m41"],"r26":["m31"],"r27":["m7","m5"],"r7":["m7","m5","m19",null,null],"r3":["m11","m14","m16","m20","m24","m30","m32","m28",null,null],"r29":["m2"]},"s21":{"r2":["m40","m36","m39","m35","m37"],"r4":[null,null,null],"r23":["m18","m23"],"r24":["m17"],"r25":["m41"],"r26":["m31"],"r27":["m7","m5"],"r7":["m7","m5","m19",null,null],"r3":["m11","m14","m16","m20","m24","m30","m32","m28",null,null],"r29":["m2"]},"s22":{"r2":["m40","m36","m39","m35","m37"],"r4":[null,null,null],"r23":["m18","m23"],"r24":["m17"],"r25":["m41"],"r26":["m31"],"r27":["m7","m5"],"r7":["m7","m5","m19",null,null],"r3":["m11","m14","m16","m20","m24","m30","m32","m28",null,null],"r29":["m2"]},"s1":{"r2":["m40","m36","m39","m35","m37"],"r4":[null,null,null],"r23":["m18","m23"],"r24":["m17"],"r25":["m41"],"r26":["m31"],"r27":["m7","m5"],"r7":["m7","m5","m19",null,null],"r3":["m11","m14","m16","m20","m24","m30","m32","m28",null,null],"r29":["m2"]}},"fixed":{"r1":["m22","m3"],"r5":["m9","m12","m13","m15","m25","m26","m27","m29","m33","m34"],"r6":["m6","m4"],"r28":["m1","m8","m10"]},"counts":{"s1":{"r3":10,"r23":2,"r27":2},"s2":{"r3":10,"r23":2,"r27":2},"s3":{"r3":10,"r23":2,"r27":2},"s4":{"r3":10,"r23":2,"r27":2},"s5":{"r3":10,"r23":2,"r27":2},"s6":{"r3":10,"r23":2,"r27":2},"s7":{"r3":10,"r23":2,"r27":2},"s8":{"r3":10,"r23":2,"r27":2},"s9":{"r3":10,"r23":2,"r27":2},"s10":{"r3":10,"r23":2,"r27":2},"s11":{"r3":10,"r23":2,"r27":2},"s12":{"r3":10,"r23":2,"r27":2},"s13":{"r3":10,"r23":2,"r27":2},"s14":{"r3":10,"r23":2,"r27":2},"s15":{"r3":10,"r23":2,"r27":2},"s16":{"r3":10,"r23":2,"r27":2},"s17":{"r3":10,"r23":2,"r27":2},"s18":{"r3":10,"r23":2,"r27":2},"s19":{"r3":10,"r23":2,"r27":2},"s20":{"r3":10,"r23":2,"r27":2},"s21":{"r3":10,"r23":2,"r27":2},"s22":{"r3":10,"r23":2,"r27":2}},"exportedAt":"10/3 15:22"};</script><script>
+(function(){
+const DAYS={t:{name:"試験曳き",date:"10/4（日）"},y:{name:"宵宮",date:"10/10（土）"},h:{name:"本宮",date:"10/11（日）"}};
+let S=null, editable=false, art=null, dl=null, dirty=false, saving=false, timer=null;
+const ui={tab:"edit",day:"y",slot:null,pick:null,q:"",person:"",confirm:null,showAbsent:false};
+try{const p=JSON.parse(localStorage.getItem("yk-ui")||"{}");Object.assign(ui,{day:p.day||ui.day,person:p.person||""})}catch(e){}
+const $=s=>document.querySelector(s), esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const mem=id=>S.members.find(m=>m.id===id);
+const slotsOf=d=>S.slots.filter(s=>s.day===d);
+function seats(slotId,role){
+  if(role.fixed){const a=S.fixed[role.id]||[];return Array.from({length:role.count},(_,i)=>a[i]||null)}
+  const a=(S.assign[slotId]||{})[role.id]||[];return Array.from({length:cnt(slotId,role)},(_,i)=>a[i]||null)}
+function cnt(slotId,role){if(role.fixed||!slotId)return role.count;const c=((S.counts||{})[slotId]||{})[role.id];return c==null?role.count:c}
+function setCnt(slotId,role,n){n=Math.max(0,Math.min(30,n));S.counts=S.counts||{};S.counts[slotId]=S.counts[slotId]||{};S.counts[slotId][role.id]=n;
+  const a=seats(slotId,role).slice(0,n);S.assign[slotId]=S.assign[slotId]||{};S.assign[slotId][role.id]=a}
+function setSeat(slotId,role,i,mid){
+  if(role.fixed){const a=seats(null,role);a[i]=mid;S.fixed[role.id]=a;return}
+  S.assign[slotId]=S.assign[slotId]||{};const a=seats(slotId,role);a[i]=mid;S.assign[slotId][role.id]=a}
+function rolesIn(slotId,mid){return S.roles.filter(r=>seats(slotId,r).includes(mid))}
+function whereIn(slotId,mid){ // 兼任OKの役は除いて探す
+  for(const r of S.roles){if(r.multi)continue;const a=seats(slotId,r);const i=a.indexOf(mid);if(i>=0)return{role:r,i}}return null}
+function totals(){const t={};for(const s of S.slots)for(const r of S.roles)for(const m of seats(s.id,r))if(m)t[m]=(t[m]||0)+1;return t}
+function roleCounts(mid){const c={};for(const s of S.slots)for(const r of S.roles)if(seats(s.id,r).includes(mid))c[r.name]=(c[r.name]||0)+1;return c}
+function filled(slotId){let f=0,n=0;for(const r of S.roles){const a=seats(slotId,r);n+=a.length;f+=a.filter(Boolean).length}return[f,n]}
+function unavailable(m,slot){ // 宵宮午後から不参加 etc.
+  // 備考の書き方：「宵宮13時から参加」「本宮15時から不参加」
+  if(!m.note)return"";const h=parseInt(slot.time);if(isNaN(h))return"";
+  for(const[k,d]of Object.entries(DAYS)){if(slot.day!==k)continue;
+    const mm=m.note.match(new RegExp(d.name+"(\\d{1,2})時から(不?参加)"));if(!mm)continue;const t=+mm[1];
+    if(mm[2]==="参加"&&h<t)return`${d.name}は${t}時から参加`;
+    if(mm[2]==="不参加"&&h>=t)return`${d.name}${t}時以降は不参加`}
+  return""}
+
+function toggleFixed(r,on){
+  if(on){const src=S.slots.map(x=>(S.assign[x.id]||{})[r.id]).find(a=>a&&a.some(Boolean))||[];
+    r.fixed=true;S.fixed[r.id]=src.slice(0,r.count);
+    for(const sid in S.assign){delete S.assign[sid][r.id];for(const rid in S.assign[sid])S.assign[sid][rid]=S.assign[sid][rid].map(x=>S.fixed[r.id].includes(x)?null:x)}
+    if(S.counts)for(const sid in S.counts)delete S.counts[sid][r.id]}
+  else{const a=S.fixed[r.id]||[];r.fixed=false;for(const x of S.slots){S.assign[x.id]=S.assign[x.id]||{};S.assign[x.id][r.id]=a.slice()}delete S.fixed[r.id]}}
+function change(){dirty=true;status();clearTimeout(timer);timer=setTimeout(save,2000);render()}
+function status(){const el=$("#status");if(!el)return;
+  if(window.__STATE__){el.textContent="";return}
+  if(!editable){el.className="status";el.textContent="閲覧用";return}
+  el.className="status"+(dirty?" dirty":"");el.textContent=saving?"保存中…":dirty?"未保存の変更あり":"保存済み"}
+async function save(){
+  if(!editable||!dirty||saving)return;saving=true;status();
+  try{await art.publish({"state.json":{content:JSON.stringify(S),contentType:"application/json"}});dirty=false}
+  catch(e){const c=e&&e.code;if(c==="conflict"){}else if(["not_writer","not_granted","not_declared","capability_disabled","capability_removed","consent_required"].includes(c)){editable=false;flash("保存できない表示モードです。閲覧のみになります")}else flash("保存に失敗しました。もう一度「今すぐ保存」を押してください")}
+  saving=false;status();render()}
+let flashMsg="";function flash(m){flashMsg=m;render();setTimeout(()=>{flashMsg="";render()},4000)}
+
+function render(){
+  try{localStorage.setItem("yk-ui",JSON.stringify({day:ui.day,person:ui.person}))}catch(e){}
+  const app=$("#app");const tabs=editable?[["edit","割り振り"],["table","一覧表"],["person","個人別"],["settings","設定"]]:[["table","一覧表"],["person","個人別"]];
+  if(!tabs.find(t=>t[0]===ui.tab))ui.tab=tabs[0][0];
+  const daySlots=slotsOf(ui.day);if(!daySlots.find(s=>s.id===ui.slot))ui.slot=daySlots[0]?.id||null;
+  let h=`<header><h1><small>令和8年度 唐国町</small>若頭 役割表</h1><span class="status" id="status"></span></header>${S.exportedAt&&window.__STATE__?`<p class="ro-note">${esc(S.exportedAt)} 時点の役割表</p>`:""}
+  <nav class="tabs" role="tablist">${tabs.map(([k,v])=>`<button role="tab" aria-selected="${ui.tab===k}" data-tab="${k}">${v}</button>`).join("")}</nav>`;
+  if(flashMsg)h+=`<div class="confirm">${esc(flashMsg)}</div>`;
+  if(ui.tab!=="settings")h+=`<div class="days">${Object.entries(DAYS).map(([k,d])=>`<button aria-pressed="${ui.day===k}" data-day="${k}">${d.name}<small>${d.date}</small></button>`).join("")}</div>`;
+  if(ui.tab==="edit")h+=vEdit(daySlots);else if(ui.tab==="table")h+=vTable(daySlots);else if(ui.tab==="person")h+=vPerson();else h+=vSettings();
+  if(editable&&dirty)h+=`<div class="savebar"><span class="status dirty">未保存の変更あり</span><button class="btn primary" data-act="savenow">今すぐ保存</button></div>`;
+  app.innerHTML=h;status();if(ui.pick)renderSheet();
+}
+function vEdit(daySlots){
+  if(!daySlots.length)return`<p class="free">この日の区切りがありません。「設定」で追加してください。</p>`;
+  let h=`<div class="slots">${daySlots.map(s=>{const[f,n]=filled(s.id);return`<button aria-pressed="${ui.slot===s.id}" data-slot="${s.id}">${esc(s.time)}<span class="fill ${f===n?"full":""}">${f}/${n}</span></button>`}).join("")}</div>`;
+  const s=S.slots.find(x=>x.id===ui.slot);const idx=daySlots.indexOf(s);
+  h+=`<div class="slothead"><div><b>${esc(s.time)}〜</b><span class="route">${esc(s.label)}</span></div><div class="tools">
+   ${idx>0?`<button class="btn" data-act="copyprev">前の区切りをコピー</button>`:""}
+   <button class="btn" data-act="copyall">この区切りを全部にコピー</button>
+   <button class="btn danger" data-act="clearslot">この区切りを空にする</button></div></div>`;
+  if(ui.confirm==="copyall")h+=`<div class="confirm">${esc(s.time)}の割り振りを、3日間のほかの全区切りに上書きコピーします（参加できない時間の人は空き席になります）。<button class="btn danger" data-act="copyallyes">コピーする</button><button class="btn" data-act="cancel">やめる</button></div>`;
+  h+=`<p class="hint">名前を長押し（パソコンはそのまま）してドラッグすると、別の席へ移動・入れ替えできます。</p>`;
+  if(ui.confirm==="clearslot")h+=`<div class="confirm">${esc(s.time)}の割り振りを全部外します（固定役は残ります）。<button class="btn danger" data-act="clearyes">外す</button><button class="btn" data-act="cancel">やめる</button></div>`;
+  for(const r of S.roles){const a=seats(s.id,r);
+    h+=`<section class="role"><h3><span>${esc(r.name)}　<span class="fill">${a.filter(Boolean).length}/${a.length}人</span></span><span class="step">${r.fixed?`<span class="tag">全区切り共通</span>`:""}${r.multi?`<span class="tag">兼任OK</span>`:""}<button data-cm="${r.id}" aria-label="${esc(r.name)}を1人減らす">−</button><button data-cp="${r.id}" aria-label="${esc(r.name)}を1人増やす">＋</button></span></h3>${r.note?`<p class="rnote">${esc(r.note)}</p>`:""}<div class="seats">
+    ${a.map((m,i)=>{const mm=m&&mem(m);const dup=m&&!r.multi?S.roles.filter(x=>x.id!==r.id&&!x.multi&&seats(s.id,x).includes(m)).map(x=>x.name):[];const w=mm?(unavailable(mm,s)||(dup.length?`${dup.join("・")}と重複`:"")):"";return`<button class="seat ${m?"on":""}" data-seat="${r.id}:${i}">${m?esc(mm?.name||"?"):"＋ 空き"}${w?`<span class="warn">${w}</span>`:""}</button>`}).join("")}</div></section>`}
+  const free=S.members.filter(m=>!m.absent&&!whereIn(s.id,m.id)&&!unavailable(m,s));
+  h+=`<p class="free">この区切りで役割なし（${free.length}人）：${free.map(m=>`<span data-freem="${m.id}">${esc(m.name)}</span>`).join("")}</p>`;
+  return h}
+function vTable(daySlots){
+  const d=DAYS[ui.day];
+  let h=`<div class="tools" style="margin-bottom:8px">${dl?`<button class="btn primary" data-act="png">この表を画像で保存（LINE用）</button>`:""}${dl&&editable?`<button class="btn" data-act="export">閲覧用HTMLを書き出す（Dandori Pages用）</button>`:""}</div>`;
+  if(!editable)h+=`<p class="ro-note">横にスクロールできます。自分の担当だけ見るなら「個人別」へ。</p>`;
+  h+=`<div id="shot"><p class="caption">${d.name}　${d.date}　若頭役割表</p>`;
+  if(!daySlots.length)return h+`<p class="cap-sub">区切りがまだありません。</p></div>`;
+  h+=`<div class="tblwrap"><table><thead><tr><th>役割</th>${daySlots.map(s=>`<th>${esc(s.time)}<small>${esc(s.label)}</small></th>`).join("")}</tr></thead><tbody>`;
+  S.roles.forEach((r,ri)=>{const rows=Math.max(0,...daySlots.map(s=>cnt(s.id,r)));const same=ri>0&&S.roles[ri-1].name===r.name;for(let i=0;i<rows;i++){
+    h+=`<tr>${`<th>${i===0&&!same?esc(r.name):""}</th>`}${daySlots.map(s=>{if(i>=cnt(s.id,r))return`<td class="na"></td>`;const m=seats(s.id,r)[i];return m?`<td>${esc(mem(m)?.name||"")}</td>`:`<td class="empty">—</td>`}).join("")}</tr>`}});
+  const ns=S.roles.filter((r,ri)=>r.note&&!(ri>0&&S.roles[ri-1].name===r.name&&S.roles[ri-1].note===r.note));
+  h+=`</tbody></table></div>${ns.length?`<ul class="notes">${ns.map(r=>`<li class="rnote"><b>${esc(r.name)}</b>：${esc(r.note)}</li>`).join("")}</ul>`:""}</div>`;
+  return h}
+function vPerson(){
+  const list=S.members.filter(m=>!m.absent);
+  let h=`<div class="personsel"><label for="psel">名前</label><select id="psel"><option value="">選んでください</option>${list.map(m=>`<option value="${m.id}" ${ui.person===m.id?"selected":""}>${esc(m.name)}</option>`).join("")}</select></div>`;
+  if(ui.person&&mem(ui.person)){
+    h+=`<div class="mylist">`;
+    for(const[k,d]of Object.entries(DAYS)){const rows=slotsOf(k).map(s=>{const rs=rolesIn(s.id,ui.person);return`<div><span>${esc(s.time)}</span><span class="lbl">${esc(s.label)}</span><span class="r">${rs.length?esc([...new Set(rs.map(x=>x.name))].join("・")):"<span class='lbl'>休み</span>"}</span></div>`}).join("");
+      if(rows)h+=`<h4>${d.name} ${d.date}</h4>${rows}`}
+    h+=`</div>`;
+    const mine=S.roles.filter(r=>r.note&&S.slots.some(s=>seats(s.id,r).includes(ui.person)));const seen=new Set();
+    const nl=mine.filter(r=>!seen.has(r.name+r.note)&&seen.add(r.name+r.note));
+    if(nl.length)h+=`<ul class="notes" style="margin-bottom:14px">${nl.map(r=>`<li class="rnote"><b>${esc(r.name)}</b>：${esc(r.note)}</li>`).join("")}</ul>`}
+  const ds=slotsOf(ui.day);
+  h+=`<p class="cap-sub">${DAYS[ui.day].name}：全員の担当（空欄＝休み）</p><div class="tblwrap"><table><thead><tr><th>名前</th>${ds.map(s=>`<th>${esc(s.time)}</th>`).join("")}</tr></thead><tbody>
+  ${list.map(m=>`<tr><th>${esc(m.name)}</th>${ds.map(s=>{const rs=rolesIn(s.id,m.id);return`<td class="${ui.person===m.id&&rs.length?"me":""}">${esc([...new Set(rs.map(x=>x.name))].join("・"))}</td>`}).join("")}</tr>`).join("")}</tbody></table></div>`;
+  return h}
+function vSettings(){
+  let h=`<div class="sec"><h2>役割と人数</h2><p>「全区切り共通」にした役は、一度決めた人がずっとその役になります（先頭無線など）。「兼任OK」にした役は、ほかの役と掛け持ちできます（給水など）。</p>`;
+  S.roles.forEach((r,i)=>{h+=`<div class="row"><input type="text" id="rn-${r.id}" value="${esc(r.name)}" data-rname="${r.id}" aria-label="役割名"><label>基本人数<input class="num" type="number" min="1" max="30" id="rc-${r.id}" value="${r.count}" data-rcount="${r.id}"></label><label><input type="checkbox" id="rf-${r.id}" ${r.fixed?"checked":""} data-rfixed="${r.id}">全区切り共通</label><label><input type="checkbox" id="rm-${r.id}" ${r.multi?"checked":""} data-rmulti="${r.id}">兼任OK</label><button class="btn mini" data-rup="${i}" ${i?"":"disabled"} aria-label="上へ">↑</button><button class="btn mini danger" data-rdel="${r.id}">削除</button><input type="text" id="ro-${r.id}" value="${esc(r.note||"")}" data-rnote="${r.id}" placeholder="注意書き（一覧表・個人別にも出ます）" aria-label="注意書き" style="flex:1 1 100%"></div>`});
+  h+=`<div class="preset"><button class="btn" data-act="addrole">＋ 役割を追加</button></div></div>`;
+  h+=`<div class="sec"><h2>区切り（ローテーションの単位）</h2><p>予定表の区間ごとに入れてあります。日ごと・時間帯ごとにしたい日は下のボタンで作り直せます（その日の割り振りは消えます）。</p>`;
+  for(const[k,d]of Object.entries(DAYS)){
+    h+=`<h3 style="font-size:.9rem;margin:14px 0 2px">${d.name} ${d.date}</h3><div class="preset"><button class="btn mini" data-preset="${k}:day">1日通しにする</button><button class="btn mini" data-preset="${k}:ampm">午前・午後・夜にする</button><button class="btn mini" data-addslot="${k}">＋ 区切りを追加</button></div>`;
+    if(ui.confirm&&ui.confirm.startsWith("preset:"+k))h+=`<div class="confirm">${d.name}の区切りと割り振りを作り直します。<button class="btn danger" data-act="presetyes">作り直す</button><button class="btn" data-act="cancel">やめる</button></div>`;
+    for(const s of slotsOf(k))h+=`<div class="row"><input class="t" type="text" id="st-${s.id}" value="${esc(s.time)}" data-stime="${s.id}" aria-label="時刻"><input type="text" id="sl-${s.id}" value="${esc(s.label)}" data-slabel="${s.id}" aria-label="区間"><button class="btn mini danger" data-sdel="${s.id}">削除</button></div>`}
+  h+=`</div><div class="sec"><h2>メンバー（${S.members.filter(m=>!m.absent).length}人参加）</h2><p>不参加にした人は割り振り候補に出ません。</p>`;
+  for(const m of S.members)h+=`<div class="row ${m.absent?"absent":""}"><input type="text" id="mn-${m.id}" value="${esc(m.name)}" data-mname="${m.id}" aria-label="名前"><input type="text" id="mo-${m.id}" value="${esc(m.note)}" data-mnote="${m.id}" placeholder="例：宵宮13時から参加" aria-label="備考" style="flex:0 1 9em"><label><input type="checkbox" id="ma-${m.id}" ${m.absent?"checked":""} data-mabs="${m.id}">不参加</label></div>`;
+  h+=`<div class="preset"><button class="btn" data-act="addmem">＋ メンバーを追加</button></div></div>`;
+  return h}
+function renderSheet(){
+  const{slotId,roleId,i}=ui.pick;const s=S.slots.find(x=>x.id===slotId);const r=S.roles.find(x=>x.id===roleId);
+  const cur=seats(slotId,r)[i];const tot=totals();const q=ui.q.trim();
+  const cand=S.members.filter(m=>(ui.showAbsent||!m.absent)&&(!q||m.name.replace(/\s/g,"").includes(q.replace(/\s/g,""))));
+  const freeL=[],busyL=[];
+  for(const m of cand){const w=r.fixed?null:whereIn(slotId,m.id);((w&&!r.multi)||unavailable(m,s)?busyL:freeL).push(m)}
+  const rc=m=>{const c=roleCounts(m.id);const n=c[r.name]||0;return`${r.name}${n}回／計${tot[m.id]||0}回`};
+  const item=m=>{const w=r.fixed?null:whereIn(slotId,m.id);const un=unavailable(m,s);const fw=r.fixed?S.roles.find(x=>x.fixed&&x.id!==r.id&&(S.fixed[x.id]||[]).includes(m.id)):null;const sub=fw?`固定：${fw.name}（タップで移動）`:r.multi&&w?`いま ${w.role.name}（兼任になります）`:w&&w.role.fixed?`固定：${w.role.name}（ここには入れられません）`:w?`いま ${w.role.name}（タップで移動）`:un?un:m.absent?"祭り不参加":m.note||"";
+    return`<button class="${(w&&!r.multi)||un?"busy":""}" data-pickm="${m.id}"><span>${esc(m.name)}${sub?`<span class="sub"><br>${esc(sub)}</span>`:""}</span><span class="cnt">${esc(rc(m))}</span></button>`};
+  const el=document.createElement("div");el.className="sheet-bg";el.dataset.act="close";
+  el.innerHTML=`<div class="sheet" role="dialog" aria-label="人を選ぶ"><header><b>${esc(s.time)}　${esc(r.name)}</b>${r.fixed?" <span class='tag'>全区切り共通</span>":""}<input id="q" type="search" placeholder="名前で絞り込み" value="${esc(ui.q)}"></header>
+  <div class="plist">${cur?`<button data-pickm="">この席を空ける<span class="cnt">${esc(mem(cur)?.name||"")}</span></button>`:""}
+  <h4>空いている人（名簿順）</h4>${freeL.map(item).join("")||"<p class='free'>該当なし</p>"}
+  ${busyL.length?`<h4>この区切りで別の役／参加不可</h4>${busyL.map(item).join("")}`:""}
+  <h4><label><input type="checkbox" id="showab" ${ui.showAbsent?"checked":""}> 不参加の人も表示</label></h4></div></div>`;
+  document.body.appendChild(el);
+  const qi=el.querySelector("#q");qi.addEventListener("input",()=>{ui.q=qi.value;const p=qi.selectionStart;closeSheet(true);renderSheet();const n=document.querySelector("#q");n.focus();n.setSelectionRange(p,p)});
+}
+function closeSheet(keep){document.querySelectorAll(".sheet-bg").forEach(e=>e.remove());if(!keep){ui.pick=null;ui.q=""}}
+
+// ---- ドラッグで移動・入れ替え ----
+let drag=null,suppressClick=false;
+function srcOf(el){if(el.dataset.freem)return{mid:el.dataset.freem};const[rid,i]=el.dataset.seat.split(":");const r=S.roles.find(x=>x.id===rid);return{r,i:+i,mid:seats(ui.slot,r)[+i]}}
+function startDrag(x,y){drag.started=true;drag.src=srcOf(drag.el);drag.el.classList.add("dragging");
+  const g=document.createElement("div");g.className="ghost";g.textContent=mem(drag.src.mid)?.name||"";document.body.appendChild(g);drag.g=g;moveGhost(x,y)}
+function moveGhost(x,y){drag.g.style.left=x+"px";drag.g.style.top=y+"px";if(y<70)window.scrollBy(0,-18);else if(y>innerHeight-70)window.scrollBy(0,18);document.querySelectorAll(".seat.drop").forEach(e=>e.classList.remove("drop"));
+  const t=document.elementFromPoint(x,y)?.closest(".seat");if(t&&t!==drag.el)t.classList.add("drop");drag.target=t&&t!==drag.el?t:null}
+function endDrag(){clearTimeout(drag?.timer);if(drag?.g)drag.g.remove();drag?.el.classList.remove("dragging");document.querySelectorAll(".seat.drop").forEach(e=>e.classList.remove("drop"));drag=null}
+function dropOn(src,tEl){
+  const[rid,ti]=tEl.dataset.seat.split(":");const tr=S.roles.find(x=>x.id===rid);const slot=ui.slot;const tm=seats(slot,tr)[+ti];const mid=src.mid;
+  if(!mid||mid===tm)return;
+  if(tr.fixed||(src.r&&src.r.fixed)){flash("「全区切り共通」の役はドラッグできへん。タップして選んでな");return}
+  if(unavailable(mem(mid),S.slots.find(x=>x.id===slot))){flash(`${mem(mid).name}さんはこの時間は参加できません`);return}
+  if(tr.multi){if(src.r&&src.r.multi)setSeat(slot,src.r,src.i,tm);setSeat(slot,tr,+ti,mid);return change()}
+  if(!src.r||src.r.multi){const w=whereIn(slot,mid);if(w&&w.role.fixed){flash("固定の役の人は動かされへん");return}if(w)setSeat(slot,w.role,w.i,null);
+    if(src.r&&src.r.multi)setSeat(slot,src.r,src.i,null);setSeat(slot,tr,+ti,mid);return change()}
+  setSeat(slot,src.r,src.i,tm);setSeat(slot,tr,+ti,mid);change()}
+document.addEventListener("pointerdown",e=>{
+  if(!editable||ui.tab!=="edit"||ui.pick||e.button>0)return;const el=e.target.closest(".seat.on,[data-freem]");if(!el)return;
+  drag={el,x:e.clientX,y:e.clientY,started:false,touch:e.pointerType!=="mouse"};
+  if(drag.touch)drag.timer=setTimeout(()=>{if(drag&&!drag.started){startDrag(drag.x,drag.y);try{navigator.vibrate&&navigator.vibrate(15)}catch(_){}}},350)});
+document.addEventListener("pointermove",e=>{if(!drag)return;const d=Math.hypot(e.clientX-drag.x,e.clientY-drag.y);
+  if(!drag.started){if(!drag.touch&&d>6)startDrag(e.clientX,e.clientY);else if(drag.touch&&d>10){endDrag()}return}
+  e.preventDefault();moveGhost(e.clientX,e.clientY)});
+document.addEventListener("touchmove",e=>{if(drag&&drag.started)e.preventDefault()},{passive:false});
+document.addEventListener("pointerup",e=>{if(!drag)return;if(drag.started){suppressClick=true;setTimeout(()=>{suppressClick=false},80);const src=drag.src,t=drag.target;endDrag();if(t)dropOn(src,t)}else endDrag()});
+document.addEventListener("pointercancel",()=>{if(drag)endDrag()});
+document.addEventListener("contextmenu",e=>{if(e.target.closest(".seat,[data-freem]")&&editable)e.preventDefault()});
+
+document.addEventListener("click",async e=>{
+  if(suppressClick){suppressClick=false;return}
+  const t=e.target.closest("button,[data-act='close']");if(!t)return;
+  if(t.classList.contains("sheet-bg")&&e.target!==t)return;
+  const d=t.dataset;
+  if(d.tab){ui.tab=d.tab;ui.confirm=null;return render()}
+  if(d.day){ui.day=d.day;ui.slot=null;return render()}
+  if(d.slot){ui.slot=d.slot;ui.confirm=null;return render()}
+  if(d.seat&&editable){const[rid,i]=d.seat.split(":");ui.pick={slotId:ui.slot,roleId:rid,i:+i};ui.q="";return renderSheet()}
+  if(d.pickm!==undefined){const{slotId,roleId,i}=ui.pick;const r=S.roles.find(x=>x.id===roleId);const mid=d.pickm||null;
+    if(mid&&r.multi){const a=seats(slotId,r);const j=a.indexOf(mid);if(j>=0)setSeat(slotId,r,j,null)}
+    if(mid&&!r.fixed&&!r.multi){const w=whereIn(slotId,mid);if(w&&w.role.fixed){closeSheet();return}if(w)setSeat(slotId,w.role,w.i,null)}
+    if(mid&&r.fixed){for(const fr of S.roles.filter(x=>x.fixed)){const a=seats(null,fr);const j=a.indexOf(mid);if(j>=0){a[j]=null;S.fixed[fr.id]=a}}
+      for(const sid in S.assign)for(const rid in S.assign[sid]){if(S.roles.find(x=>x.id===rid)?.multi)continue;S.assign[sid][rid]=S.assign[sid][rid].map(x=>x===mid?null:x)}}
+    setSeat(slotId,r,i,mid);closeSheet();return change()}
+  if(d.act==="close"){closeSheet();return}
+  if(d.act==="savenow"){clearTimeout(timer);return save()}
+  if(d.act==="cancel"){ui.confirm=null;return render()}
+  if(d.act==="copyprev"){const ds=slotsOf(ui.day);const i=ds.findIndex(s=>s.id===ui.slot);const p=ds[i-1];S.assign[ui.slot]=JSON.parse(JSON.stringify(S.assign[p.id]||{}));S.counts=S.counts||{};if((S.counts||{})[p.id])S.counts[ui.slot]=JSON.parse(JSON.stringify(S.counts[p.id]));else delete S.counts[ui.slot];return change()}
+  if((d.cm||d.cp)&&S.roles.find(x=>x.id===(d.cm||d.cp)).fixed){const r=S.roles.find(x=>x.id===(d.cm||d.cp));r.count=Math.max(0,Math.min(30,r.count+(d.cp?1:-1)));S.fixed[r.id]=(S.fixed[r.id]||[]).slice(0,r.count);return change()}
+  if(d.cm||d.cp){const r=S.roles.find(x=>x.id===(d.cm||d.cp));setCnt(ui.slot,r,cnt(ui.slot,r)+(d.cp?1:-1));return change()}
+  if(d.act==="copyall"){ui.confirm="copyall";return render()}
+  if(d.act==="copyallyes"){const src=S.assign[ui.slot]||{};const cs=(S.counts||{})[ui.slot];S.counts=S.counts||{};
+    for(const x of S.slots){if(x.id===ui.slot)continue;const a=JSON.parse(JSON.stringify(src));
+      for(const rid in a)a[rid]=a[rid].map(m=>m&&unavailable(mem(m),x)?null:m);S.assign[x.id]=a;if(cs)S.counts[x.id]=JSON.parse(JSON.stringify(cs));else delete S.counts[x.id]}
+    ui.confirm=null;return change()}
+  if(d.act==="clearslot"){ui.confirm="clearslot";return render()}
+  if(d.act==="clearyes"){delete S.assign[ui.slot];ui.confirm=null;return change()}
+  if(d.act==="png")return savePng();
+  if(d.act==="export")return exportHtml();
+  if(d.act==="addrole"){S.seq++;S.roles.push({id:"r"+S.seq,name:"新しい役割",count:1,fixed:false});return change()}
+  if(d.act==="addmem"){S.seq++;S.members.push({id:"m"+S.seq,name:"",note:"",absent:false});return change()}
+  if(d.rup){const i=+d.rup;[S.roles[i-1],S.roles[i]]=[S.roles[i],S.roles[i-1]];return change()}
+  if(d.rdel){S.roles=S.roles.filter(r=>r.id!==d.rdel);return change()}
+  if(d.sdel){S.slots=S.slots.filter(s=>s.id!==d.sdel);delete S.assign[d.sdel];if(S.counts)delete S.counts[d.sdel];return change()}
+  if(d.addslot){S.seq++;const last=slotsOf(d.addslot).slice(-1)[0];const ns={id:"s"+S.seq,day:d.addslot,time:"",label:"新しい区切り"};
+    const idx=last?S.slots.indexOf(last)+1:S.slots.length;S.slots.splice(idx,0,ns);return change()}
+  if(d.preset){ui.confirm="preset:"+d.preset;return render()}
+  if(d.act==="presetyes"){const[k,kind]=ui.confirm.slice(7).split(":");const old=slotsOf(k);old.forEach(s=>delete S.assign[s.id]);
+    const defs=kind==="day"?[["","1日通し"]]:k==="t"?[["12:30","午後前半"],["14:30","午後後半"]]:[["",""],["",""],["",""]].map((_,i)=>[["朝","午前"],["昼","午後"],["夜","夜曳き"]][i]);
+    const at=old.length?S.slots.indexOf(old[0]):S.slots.length;S.slots=S.slots.filter(s=>s.day!==k);
+    const ns=defs.map(([t,l])=>{S.seq++;return{id:"s"+S.seq,day:k,time:t,label:l}});S.slots.splice(Math.min(at,S.slots.length),0,...ns);
+    ui.confirm=null;return change()}
+});
+document.addEventListener("change",e=>{const t=e.target,d=t.dataset;
+  if(t.id==="psel"){ui.person=t.value;return render()}
+  if(t.id==="showab"){ui.showAbsent=t.checked;closeSheet(true);return renderSheet()}
+  const R=id=>S.roles.find(r=>r.id===id),M=id=>S.members.find(m=>m.id===id),SL=id=>S.slots.find(s=>s.id===id);
+  if(d.rname)R(d.rname).name=t.value;else if(d.rcount)R(d.rcount).count=Math.max(1,Math.min(30,+t.value||1));
+  else if(d.rfixed)toggleFixed(R(d.rfixed),t.checked);else if(d.rmulti)R(d.rmulti).multi=t.checked;else if(d.rnote!==undefined)R(d.rnote).note=t.value.trim();else if(d.mname)M(d.mname).name=t.value;else if(d.mnote)M(d.mnote).note=t.value;
+  else if(d.mabs)M(d.mabs).absent=t.checked;else if(d.stime)SL(d.stime).time=t.value;else if(d.slabel)SL(d.slabel).label=t.value;else return;
+  change()});
+async function savePng(){
+  const el=$("#shot");if(!el||!window.html2canvas||!dl)return;
+  const wraps=el.querySelectorAll(".tblwrap");wraps.forEach(w=>{w.style.overflow="visible";w.style.width="max-content"});el.style.width="max-content";
+  const bg=getComputedStyle(document.body).backgroundColor;
+  try{const c=await html2canvas(el,{backgroundColor:bg,scale:2});const blob=await new Promise(r=>c.toBlob(r,"image/png"));
+    await dl.save({filename:`役割表_${DAYS[ui.day].name}.png`,data:blob})}catch(e){if(e&&e.code!=="declined"&&e.code!=="cancelled")flash("画像を作れませんでした")}
+  render()}
+
+function buildExport(){
+  const now=new Date();const st=JSON.parse(JSON.stringify(S));st.exportedAt=`${now.getMonth()+1}/${now.getDate()} ${now.getHours()}:${String(now.getMinutes()).padStart(2,"0")}`;
+  const js=document.getElementById("main-js").textContent,css=document.getElementById("main-css").textContent;
+  const data=JSON.stringify(st).replace(/</g,"\\u003c");
+  return `<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>唐国町 若頭役割表</title><style>body{margin:0}[hidden]{display:none!important}${css}</style></head><body><div class="wrap" id="app"></div><script>window.__STATE__=${data};<\/script><script>${js}<\/script></body></html>`}
+async function exportHtml(){if(!dl)return;try{await dl.save({filename:"wakagashira-yakuwari.html",data:new Blob([buildExport()],{type:"text/html"})})}catch(e){if(e&&e.code!=="declined"&&e.code!=="cancelled")flash("書き出しに失敗しました")}}
+async function boot(){
+  if(window.__STATE__){S=window.__STATE__;ui.tab="person";render();return}
+  try{const r=await fetch("state.json",{cache:"no-store"});if(!r.ok)throw 0;S=await r.json()}catch(e){
+    $("#app").innerHTML=`<header><h1><small>令和8年度 唐国町</small>若頭 役割表</h1></header><p class="free">データを読み込めませんでした。ページを開き直してください。</p>`;return}
+  render();
+  if(window.claude&&claude.use){
+    const [a,u,d]=await Promise.all([claude.use("artifact"),claude.use("user"),claude.use("downloads")]);
+    dl=d;let can=false;try{can=u?await u.isOwner():false}catch(e){}
+    art=a;editable=!!(a&&can);if(editable&&ui.tab==="table")ui.tab="edit";
+    if(!editable)ui.tab="table";render()}
+  else{ui.tab="table";render()}
+}
+boot();
+})();
+</script></body></html>

@@ -1,0 +1,30 @@
+name: 10月20日に公開終了
+on:
+  schedule:
+    - cron: "0 15 19 10 *"   # 10/20 0:00（日本時間）
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  close:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 2026年以外は何もしない
+        id: check
+        run: |
+          if [ "$(TZ=Asia/Tokyo date +%Y)" = "2026" ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then echo "go=1" >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/checkout@v4
+        if: steps.check.outputs.go == '1'
+      - name: 役割表を消して終了ページに差し替え
+        if: steps.check.outputs.go == '1'
+        run: |
+          cat > index.html <<'HTML'
+          <!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>公開終了</title></head>
+          <body style="font-family:system-ui,sans-serif;padding:40px 16px;text-align:center;color:#1b2236;background:#f3f2ee">
+          <h1 style="font-size:1.3rem">令和8年度 唐国町 若頭役割表</h1><p>公開は終了しました。</p></body></html>
+          HTML
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add index.html
+          git commit -m "10月20日 公開終了" || exit 0
+          git push
